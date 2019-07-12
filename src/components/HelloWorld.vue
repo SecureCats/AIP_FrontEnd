@@ -45,7 +45,7 @@
             <v-flex>
               <v-card flat color="white">
                 <v-card-title class="super-large font-weight-bold"
-                  >登录/注册</v-card-title
+                  >登录</v-card-title
                 >
                 <v-card-text>
                   <template v-for="(v, index) in inputs">
@@ -60,13 +60,8 @@
                       required
                     ></v-text-field>
                   </template>
-                  <v-flex mt-3 class="font-weight-bold">身份*</v-flex>
-                  <v-select
-                    :items="identities"
-                    v-model="select"
-                    required
-                    background-color="#f5f6f8"
-                  ></v-select>
+
+                  <v-flex mt-5></v-flex>
                   <v-btn
                     depressed
                     round
@@ -110,18 +105,14 @@ export default {
     return {
       select: null,
       inputs: trans({
-        label: ["用户名", "学号", "密码"],
+        label: ["学工号", "密码"],
         ph: [
-          "Please input your name.",
           "Please input your student ID.",
           "Your credentials are kept private."
         ],
         rq: [true, true, true]
       }),
-      identities: trans({
-        text: ["本科生", "研究生"],
-        value: [0, 1]
-      }),
+
       myImage: require("@/assets/AIP_login_background.png")
     };
   },
