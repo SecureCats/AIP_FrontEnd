@@ -138,7 +138,7 @@ export default {
     submit: function() {
       if (!this.$data.valid) return;
       axios
-        .post("api/token/", {
+        .post("/api/token/", {
           username: this.$data.inputs[0].vl,
           password: this.$data.inputs[1].vl
         })
