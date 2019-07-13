@@ -113,6 +113,7 @@ export default {
   data() {
     return {
       valid: true,
+      token: "",
       inputs: trans({
         label: ["学工号", "密码"],
         ph: [
@@ -142,8 +143,14 @@ export default {
           username: this.$data.inputs[0].vl,
           password: this.$data.inputs[1].vl
         })
-        .then(function(response) {
-          console.log(response);
+        .then(function({ data, status }) {
+          if (status == 200) {
+            // LGTM
+            this.$data.token = data.token;
+          } else if (status == 401) {
+            // unauthorized
+            // TODO
+          }
         })
         .catch(function(error) {
           // pop error
