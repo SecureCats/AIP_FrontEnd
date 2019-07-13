@@ -1,5 +1,4 @@
 module.exports = {
   publicPath: process.env.NODE_ENV === "production" ? "/static/login/" : "/",
   outputDir: process.env.NODE_ENV === "production" ? "dist/login" : "dist",
-  assetsDir: process.env.NODE_ENV === "production" ? "static/" : "",
 };
