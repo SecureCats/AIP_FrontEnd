@@ -9,7 +9,7 @@
               <v-layout align-center>
                 <v-flex>
                   <v-icon class="icon-large">school</v-icon>
-                  <span class="font-weight-bold large"
+                  <span class="font-weight-bold large title-font"
                     >&nbsp;&nbsp;&nbsp;教务系统统一身份认证</span
                   >
                 </v-flex>
@@ -44,36 +44,43 @@
           <v-layout align-center>
             <v-flex>
               <v-card flat color="white">
-                <v-card-title class="super-large font-weight-bold"
+                <v-card-title class="super-large font-weight-bold title-font"
                   >登录</v-card-title
                 >
                 <v-card-text>
-                  <template v-for="(v, index) in inputs">
-                    <v-flex :key="index + 'i'" mt-3 class="font-weight-bold">{{
-                      v.label + (v.rq ? "*" : "")
-                    }}</v-flex>
-                    <v-text-field
-                      mt-0
-                      :key="index + 'v'"
-                      :placeholder="v.ph"
-                      background-color="#f5f6f8"
-                      required
-                    ></v-text-field>
-                  </template>
+                  <v-form v-model="valid">
+                    <template v-for="(v, index) in inputs">
+                      <v-flex
+                        :key="index + 'i'"
+                        mt-3
+                        class="font-weight-bold"
+                        >{{ v.label + (v.rq ? "*" : "") }}</v-flex
+                      >
+                      <v-text-field
+                        mt-0
+                        :key="index + 'v'"
+                        :placeholder="v.ph"
+                        :type="v.tp"
+                        :rules="v.rl"
+                        v-model="v.vl"
+                        background-color="#f5f6f8"
+                        required
+                      ></v-text-field>
+                    </template>
 
-                  <v-flex mt-5></v-flex>
-                  <v-btn
-                    depressed
-                    round
-                    block
-                    dark
-                    color="#3A9BFC"
-                    class="font-weight-bold medium"
-                    >登录</v-btn
-                  >
+                    <v-flex mt-5></v-flex>
+                    <v-btn
+                      depressed
+                      round
+                      block
+                      dark
+                      color="#3A9BFC"
+                      class="font-weight-bold medium"
+                      @click="submit"
+                      >登录</v-btn
+                    >
+                  </v-form>
                 </v-card-text>
-
-                <v-card-action>{{ select }}</v-card-action>
               </v-card>
             </v-flex>
           </v-layout>
@@ -84,6 +91,8 @@
 </template>
 
 <script>
+const axios = require("axios");
+
 function trans(params) {
   let length = 0;
   for (let key in params) {
@@ -103,22 +112,47 @@ function trans(params) {
 export default {
   data() {
     return {
-      select: null,
+      valid: true,
       inputs: trans({
         label: ["学工号", "密码"],
         ph: [
           "Please input your student ID.",
           "Your credentials are kept private."
         ],
-        rq: [true, true, true]
+        rq: [true, true],
+        tp: ["input", "password"],
+        vl: ["", ""],
+        rl: [
+          [
+            v => !!v || "Username is required",
+            v => (v && v.length <= 30) || "Name must be less than 30 characters"
+          ],
+          [v => !!v || "Password is required"]
+        ]
       }),
 
       myImage: require("@/assets/AIP_login_background.png")
     };
   },
   methods: {
-    get_first_identity: function() {
-      return this.$data.identities[0];
+    submit: function() {
+      if (!this.$data.valid) return;
+      axios
+        .post("api/token/", {
+          username: this.$data.inputs[0].vl,
+          password: this.$data.inputs[1].vl
+        })
+        .then(function(response) {
+          console.log(response);
+        })
+        .catch(function(error) {
+          // pop error
+        });
+    }
+  },
+  computed: {
+    get_username: function() {
+      return this.username;
     }
   }
 };
@@ -126,9 +160,16 @@ export default {
 
 <style>
 /* @import url("https://use.fontawesome.com/releases/v5.1.0/css/all.css"); */
-@import url("https://fonts.googleapis.com/css?family=Noto+Serif+SC&display=swap");
+@import url("https://fonts.googleapis.com/css?family=Noto+Sans+SC:400,700|Noto+Serif+SC:400,700&display=swap&subset=chinese-simplified");
+@import url("https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900");
+
 * {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen,
+    Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", "Noto Sans SC", sans-serif;
+}
+.title-font {
   font-family: "Noto Serif SC", serif;
+  font-weight: 700;
 }
 .icon-large {
   font-size: 3em;
