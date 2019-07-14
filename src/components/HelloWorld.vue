@@ -80,11 +80,12 @@
                 <v-snackbar
                   v-model="snackbar.on"
                   :timeout="snackbar.timeout"
-                  top="true"
+                  top
                   :color="snackbar.color"
                 >
+                  <v-icon dark>{{ snackbar.bt }}</v-icon>
                   {{ snackbar.text }}
-                  <v-btn flat @click="snackbar.on = false">关闭</v-btn>
+                  <v-btn flat @click="snackbar.on = false">好的</v-btn>
                 </v-snackbar>
               </v-card>
             </v-flex>
@@ -121,7 +122,8 @@ export default {
         on: false,
         timeout: 6000,
         color: "",
-        text: ""
+        text: "",
+        bt: ""
       },
       valid: true,
       token: "",
@@ -166,25 +168,27 @@ export default {
             this.update_snackbar({
               on: true,
               color: "success",
-              text: "登陆成功"
+              text: "登陆成功",
+              bt: "check"
             });
           }
         })
-        .catch(error => {
-          if (error.status == 404) {
+        .catch(({ response }) => {
+          if (response.status == 404) {
             this.update_snackbar({
               on: true,
               color: "error",
+              bt: "info",
               text: "404网络异常"
             });
-          } else if (error.status == 401) {
+          } else if (response.status == 401) {
             this.update_snackbar({
               on: true,
               color: "error",
+              bt: "info",
               text: "用户名或密码错误"
             });
           }
-          console.log(error);
         });
     }
   },
