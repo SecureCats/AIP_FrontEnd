@@ -83,15 +83,12 @@
                 </v-card-text>
                 <v-snackbar
                   v-model="snackbar.on"
-                  :left="true"
                   :timeout="snackbar.timeout"
-                  :top="true"
+                  top="true"
                   :color="snackbar.color"
                 >
                   {{ snackbar.text }}
-                  <v-btn color="pink" flat @click="snackbar.on = false"
-                    >关闭</v-btn
-                  >
+                  <v-btn flat @click="snackbar.on = false">关闭</v-btn>
                 </v-snackbar>
               </v-card>
             </v-flex>
@@ -126,7 +123,7 @@ export default {
     return {
       snackbar: {
         on: false,
-        timeout: 2,
+        timeout: 6000,
         color: "",
         text: ""
       },
@@ -154,6 +151,11 @@ export default {
     };
   },
   methods: {
+    update_snackbar(data) {
+      for (let key in data) {
+        this.$set(this.snackbar, key, data[key]);
+      }
+    },
     submit: function() {
       if (!this.$data.valid) return;
       axios
@@ -161,40 +163,39 @@ export default {
           username: this.$data.inputs[0].vl,
           password: this.$data.inputs[1].vl
         })
-        .then(function({ data, status }) {
+        .then(({ data, status }) => {
           if (status == 200) {
             // LGTM
-            this.$data.token = data.token;
-            this.$data.snackbar = {
+            this.token = data.token;
+            this.update_snackbar({
               on: true,
               color: "success",
-              text: "登陆成功",
-              ...this.$data.snackbar
-            };
+              text: "登陆成功"
+            });
           } else if (status == 401) {
-            this.$data.snackbar = {
+            this.update_snackbar({
               on: true,
               color: "error",
-              text: "用户名或密码错误",
-              ...this.$data.snackbar
-            };
-          } else if (status == 404) {
-            this.$data.snackbar = {
-              on: true,
-              color: "error",
-              text: "网络异常",
-              ...this.$data.snackbar
-            };
+              text: "用户名或密码错误"
+            });
           }
         })
-        .catch(function(error) {
-          console.log(error);
+        .catch(() => {
+          // console.log(error);
+          this.update_snackbar({
+            on: true,
+            color: "error",
+            text: "404网络异常"
+          });
         });
     }
   },
   computed: {
     get_username: function() {
       return this.username;
+    },
+    snb: function() {
+      return this.snackbar;
     }
   }
 };

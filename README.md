@@ -1,4 +1,4 @@
-# jwc
+# AIP FrontEnd
 
 ## Project setup
 ```
@@ -14,6 +14,7 @@ yarn run serve
 ```
 yarn run build
 ```
+生成的`dist/`文件夹可能有些奇怪，这是为了适应django的结构而配置的。
 
 ### Run your tests
 ```
