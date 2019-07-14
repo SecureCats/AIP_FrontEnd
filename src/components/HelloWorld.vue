@@ -4,18 +4,14 @@
     <v-layout row>
       <v-flex xs8 id="grey-color" style="height:100vh;">
         <v-layout column justify-space-between fill-height>
-          <v-card flat color="#f5f6f8">
-            <v-container>
-              <v-layout align-center>
-                <v-flex>
-                  <v-icon class="icon-large">school</v-icon>
-                  <span class="font-weight-bold large title-font"
-                    >&nbsp;&nbsp;&nbsp;教务系统统一身份认证</span
-                  >
-                </v-flex>
-              </v-layout>
-            </v-container>
-          </v-card>
+          <v-toolbar flat color="transparent">
+            <v-toolbar-side-icon>
+              <v-icon>school</v-icon>
+            </v-toolbar-side-icon>
+            <v-toolbar-title class="headline text-uppercase">
+              <span class="title-font">教务系统统一身份认证</span>
+            </v-toolbar-title>
+          </v-toolbar>
 
           <v-container fill-height>
             <v-layout fill-height align-center>
@@ -44,9 +40,9 @@
           <v-layout align-center>
             <v-flex>
               <v-card flat color="white">
-                <v-card-title class="super-large font-weight-bold title-font"
-                  >登录</v-card-title
-                >
+                <v-card-title class="headline text-uppercase">
+                  <span class="title-font">登录</span>
+                </v-card-title>
                 <v-card-text>
                   <v-form v-model="valid">
                     <template v-for="(v, index) in inputs">
@@ -74,7 +70,7 @@
                       round
                       block
                       dark
-                      color="info"
+                      color="primary"
                       class="font-weight-bold medium"
                       @click="submit"
                       >登录</v-btn
