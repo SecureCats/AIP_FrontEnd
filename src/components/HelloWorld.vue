@@ -74,13 +74,25 @@
                       round
                       block
                       dark
-                      color="#3A9BFC"
+                      color="info"
                       class="font-weight-bold medium"
                       @click="submit"
                       >登录</v-btn
                     >
                   </v-form>
                 </v-card-text>
+                <v-snackbar
+                  v-model="snackbar.on"
+                  :left="true"
+                  :timeout="snackbar.timeout"
+                  :top="true"
+                  :color="snackbar.color"
+                >
+                  {{ snackbar.text }}
+                  <v-btn color="pink" flat @click="snackbar.on = false"
+                    >关闭</v-btn
+                  >
+                </v-snackbar>
               </v-card>
             </v-flex>
           </v-layout>
@@ -112,6 +124,12 @@ function trans(params) {
 export default {
   data() {
     return {
+      snackbar: {
+        on: false,
+        timeout: 2,
+        color: "",
+        text: ""
+      },
       valid: true,
       token: "",
       inputs: trans({
@@ -147,13 +165,30 @@ export default {
           if (status == 200) {
             // LGTM
             this.$data.token = data.token;
+            this.$data.snackbar = {
+              on: true,
+              color: "success",
+              text: "登陆成功",
+              ...this.$data.snackbar
+            };
           } else if (status == 401) {
-            // unauthorized
-            // TODO
+            this.$data.snackbar = {
+              on: true,
+              color: "error",
+              text: "用户名或密码错误",
+              ...this.$data.snackbar
+            };
+          } else if (status == 404) {
+            this.$data.snackbar = {
+              on: true,
+              color: "error",
+              text: "网络异常",
+              ...this.$data.snackbar
+            };
           }
         })
         .catch(function(error) {
-          // pop error
+          console.log(error);
         });
     }
   },
