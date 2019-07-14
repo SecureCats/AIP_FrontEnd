@@ -177,7 +177,7 @@ export default {
               color: "error",
               text: "404网络异常"
             });
-          } else if (status == 401) {
+          } else if (error.status == 401) {
             this.update_snackbar({
               on: true,
               color: "error",
