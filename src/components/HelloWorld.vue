@@ -156,8 +156,8 @@ export default {
       if (!this.$data.valid) return;
       axios
         .post("/api/token/", {
-          username: this.$data.inputs[0].vl,
-          password: this.$data.inputs[1].vl
+          username: this.inputs[0].vl,
+          password: this.inputs[1].vl
         })
         .then(({ data, status }) => {
           if (status == 200) {
@@ -168,6 +168,15 @@ export default {
               color: "success",
               text: "登陆成功"
             });
+          }
+        })
+        .catch(error => {
+          if (error.status == 404) {
+            this.update_snackbar({
+              on: true,
+              color: "error",
+              text: "404网络异常"
+            });
           } else if (status == 401) {
             this.update_snackbar({
               on: true,
@@ -175,14 +184,7 @@ export default {
               text: "用户名或密码错误"
             });
           }
-        })
-        .catch(() => {
-          // console.log(error);
-          this.update_snackbar({
-            on: true,
-            color: "error",
-            text: "404网络异常"
-          });
+          console.log(error);
         });
     }
   },
