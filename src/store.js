@@ -4,7 +4,13 @@ import Vuex from "vuex";
 Vue.use(Vuex);
 
 export default new Vuex.Store({
-  state: {},
-  mutations: {},
+  state: {
+    token: "111"
+  },
+  mutations: {
+    updateToken(state, token) {
+      state.token = token;
+    }
+  },
   actions: {}
 });

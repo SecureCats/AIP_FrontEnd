@@ -58,6 +58,7 @@
                         :placeholder="v.ph"
                         :type="v.tp"
                         :rules="v.rl"
+                        @keyup.enter="submit"
                         v-model="v.vl"
                         background-color="#f5f6f8"
                         required
@@ -171,6 +172,7 @@ export default {
               text: "登陆成功",
               bt: "check"
             });
+            this.$router.push("/home");
           }
         })
         .catch(({ response }) => {
