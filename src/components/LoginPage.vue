@@ -83,6 +83,7 @@
                   :timeout="snackbar.timeout"
                   top
                   :color="snackbar.color"
+                  id="snackbar"
                 >
                   <v-icon dark>{{ snackbar.bt }}</v-icon>
                   {{ snackbar.text }}
@@ -100,22 +101,6 @@
 <script>
 const axios = require("axios");
 
-function trans(params) {
-  let length = 0;
-  for (let key in params) {
-    length = params[key].length;
-    break;
-  }
-  let a = new Array(length);
-  for (let i = 0; i < a.length; i++) {
-    a[i] = new Object();
-    for (let key in params) {
-      a[i][key] = params[key][i];
-    }
-  }
-  return a;
-}
-
 export default {
   data() {
     return {
@@ -128,23 +113,7 @@ export default {
       },
       valid: true,
       token: "",
-      inputs: trans({
-        label: ["学工号", "密码"],
-        ph: [
-          "Please input your student ID.",
-          "Your credentials are kept private."
-        ],
-        rq: [true, true],
-        tp: ["input", "password"],
-        vl: ["", ""],
-        rl: [
-          [
-            v => !!v || "Username is required",
-            v => (v && v.length <= 30) || "Name must be less than 30 characters"
-          ],
-          [v => !!v || "Password is required"]
-        ]
-      }),
+      inputs: [],
 
       myImage: require("@/assets/AIP_login_background.png")
     };
@@ -192,6 +161,21 @@ export default {
             });
           }
         });
+    },
+    trans: params => {
+      let length = 0;
+      for (let key in params) {
+        length = params[key].length;
+        break;
+      }
+      let a = new Array(length);
+      for (let i = 0; i < a.length; i++) {
+        a[i] = new Object();
+        for (let key in params) {
+          a[i][key] = params[key][i];
+        }
+      }
+      return a;
     }
   },
   computed: {
@@ -201,6 +185,25 @@ export default {
     snb: function() {
       return this.snackbar;
     }
+  },
+  created: function() {
+    this.inputs = this.trans({
+      label: ["学工号", "密码"],
+      ph: [
+        "Please input your student ID.",
+        "Your credentials are kept private."
+      ],
+      rq: [true, true],
+      tp: ["input", "password"],
+      vl: ["", ""],
+      rl: [
+        [
+          v => !!v || "Username is required",
+          v => (v && v.length <= 30) || "Name must be less than 30 characters"
+        ],
+        [v => !!v || "Password is required"]
+      ]
+    });
   }
 };
 </script>
