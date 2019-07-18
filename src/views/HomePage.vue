@@ -1,7 +1,14 @@
 <template>
   <v-layout fill-height justify-space-between column>
     <v-toolbar flat color="secondary">
-      <v-icon color="#202020">school</v-icon>
+      <v-toolbar-side-icon>
+        <v-img
+          :src="require('@/assets/icon.png')"
+          width="24px"
+          height="24px"
+          contain
+        />
+      </v-toolbar-side-icon>
       <v-toolbar-title class="title-font title-size">教务处</v-toolbar-title>
       <v-spacer></v-spacer>
       <v-toolbar-items class="hidden-sm-and-down">
