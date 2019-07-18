@@ -1,7 +1,9 @@
-import { shallowMount, mount, createLocalVue } from "@vue/test-utils";
+import Vue from "vue";
+import { shallowMount, createLocalVue, Wrapper } from "@vue/test-utils";
 import LoginPage from "@/components/LoginPage.vue";
 import HomePage from "@/views/HomePage.vue";
 import vuetify from "vuetify";
+import { random } from "node-forge";
 
 // describe("Components", () => {
 //   it("is a instance of VUe", () => {
@@ -11,13 +13,12 @@ import vuetify from "vuetify";
 // });
 
 describe("LoginPage", () => {
-  let wrapper = shallowMount(LoginPage);
+  let wrapper;
 
   beforeEach(() => {
-    const localVue = createLocalVue();
-    localVue.use(vuetify);
+    Vue.use(vuetify);
     wrapper = shallowMount(LoginPage, {
-      localVue
+      LoginPage
     });
   });
 
@@ -85,20 +86,55 @@ describe("LoginPage", () => {
       }
     ]);
   });
+  it("snb function should return snackbar object", () => {
+    let random = {
+      a: Math.random(),
+      b: Math.random()
+    };
+    wrapper.vm.snackbar = random;
+    expect(wrapper.vm.snb).toEqual(random);
+  });
+  it("get_username should listen the data `username`", () => {
+    let name = Math.random();
+    wrapper.vm.username = name;
+    expect(wrapper.vm.username).toEqual(name);
+  });
+  it("update_snackbar work as expect.", () => {
+    let snb = {
+      on: Math.random(),
+      timeout: Math.random(),
+      color: Math.random().toString(),
+      text: Math.random().toString(),
+      bt: Math.random().toString()
+    };
+    wrapper.vm.update_snackbar(snb);
+    expect(wrapper.vm.snackbar).toEqual(snb);
+  });
 });
 
 describe("HomePage", () => {
   let wrapper;
-  beforeEach(() => {
-    const localVue = createLocalVue();
-    localVue.use(vuetify);
 
+  beforeEach(() => {
+    Vue.use(vuetify);
     wrapper = shallowMount(HomePage, {
-      localVue
+      Vue
     });
   });
-
   it("renders a Vue Instance.", () => {
     expect(wrapper.isVueInstance()).toBeTruthy();
+  });
+  it("initalize all the data properly", () => {
+    expect(wrapper.vm.snackbar).toBeFalsy();
+    expect(wrapper.vm.timeout).toBeGreaterThanOrEqual(1000);
+    expect(wrapper.vm.navbar_navs).toBeDefined();
+    expect(wrapper.vm.user).toHaveProperty("name");
+    expect(wrapper.vm.user).toHaveProperty("detail");
+    expect(wrapper.vm.info[0][0]).toBeDefined();
+  });
+
+  it("jump function work as expect.", () => {
+    wrapper.vm.jump(2);
+    expect(wrapper.vm.snackbar).toBeTruthy();
   });
 });
