@@ -6,12 +6,7 @@
         <v-layout column justify-space-between fill-height>
           <v-toolbar flat color="transparent">
             <v-toolbar-side-icon>
-              <v-img
-                :src="require('@/assets/icon.png')"
-                width="24px"
-                height="24px"
-                contain
-              />
+              <v-img :src="myIcon" width="24px" height="24px" contain />
             </v-toolbar-side-icon>
             <v-toolbar-title class="headline text-uppercase">
               <span class="title-font">教务系统统一身份认证</span>
@@ -50,25 +45,32 @@
                 </v-card-title>
                 <v-card-text>
                   <v-form v-model="valid">
-                    <template v-for="(v, index) in inputs">
-                      <v-flex
-                        :key="index + 'i'"
-                        mt-3
-                        class="font-weight-bold"
-                        >{{ v.label + (v.rq ? "*" : "") }}</v-flex
-                      >
-                      <v-text-field
-                        mt-0
-                        :key="index + 'v'"
-                        :placeholder="v.ph"
-                        :type="v.tp"
-                        :rules="v.rl"
-                        @keyup.enter="submit"
-                        v-model="v.vl"
-                        background-color="#f5f6f8"
-                        required
-                      ></v-text-field>
-                    </template>
+                    <!-- <template v-for="(v, index) in inputs"> -->
+                    <v-flex mt-3 class="font-weight-bold">学工号 *</v-flex>
+                    <v-text-field
+                      mt-0
+                      :placeholder="inputs[0].ph"
+                      :type="inputs[0].tp"
+                      :rules="inputs[0].rl"
+                      @keyup.enter="submit"
+                      :value="username"
+                      @input="updateUsername"
+                      background-color="#f5f6f8"
+                      required
+                    ></v-text-field>
+                    <v-flex mt-3 class="font-weight-bold">密码 * </v-flex>
+                    <v-text-field
+                      mt-0
+                      :placeholder="inputs[1].ph"
+                      :type="inputs[1].tp"
+                      :rules="inputs[1].rl"
+                      :value="password"
+                      @input="updatePassword"
+                      @keyup.enter="submit"
+                      background-color="#f5f6f8"
+                      required
+                    ></v-text-field>
+                    <!-- </template> -->
 
                     <v-flex mt-5></v-flex>
                     <v-btn
@@ -83,17 +85,6 @@
                     >
                   </v-form>
                 </v-card-text>
-                <v-snackbar
-                  v-model="snackbar.on"
-                  :timeout="snackbar.timeout"
-                  top
-                  :color="snackbar.color"
-                  id="snackbar"
-                >
-                  <v-icon dark>{{ snackbar.bt }}</v-icon>
-                  {{ snackbar.text }}
-                  <v-btn flat @click="snackbar.on = false">好的</v-btn>
-                </v-snackbar>
               </v-card>
             </v-flex>
           </v-layout>
@@ -104,68 +95,29 @@
 </template>
 
 <script>
-const axios = require("axios");
+import { mapState } from "vuex";
 
 export default {
   data() {
     return {
-      snackbar: {
-        on: false,
-        timeout: 6000,
-        color: "",
-        text: "",
-        bt: ""
-      },
       valid: true,
       token: "",
       inputs: [],
 
-      myImage: require("@/assets/AIP_login_background.png")
+      myImage: require("@/assets/AIP_login_background.png"),
+      myIcon: require("@/assets/icon.png")
     };
   },
   methods: {
-    update_snackbar(data) {
-      for (let key in data) {
-        this.$set(this.snackbar, key, data[key]);
-      }
+    updateUsername(e) {
+      this.$store.commit("updateUsername", e);
+    },
+    updatePassword(e) {
+      this.$store.commit("updatePassword", e);
     },
     submit: function() {
       if (!this.$data.valid) return;
-      axios
-        .post("/api/token/", {
-          username: this.inputs[0].vl,
-          password: this.inputs[1].vl
-        })
-        .then(({ data, status }) => {
-          if (status == 200) {
-            // LGTM
-            this.token = data.token;
-            this.update_snackbar({
-              on: true,
-              color: "success",
-              text: "登陆成功",
-              bt: "check"
-            });
-            this.$router.push("/home");
-          }
-        })
-        .catch(({ response }) => {
-          if (response.status == 404) {
-            this.update_snackbar({
-              on: true,
-              color: "error",
-              bt: "info",
-              text: "404网络异常"
-            });
-          } else if (response.status == 401) {
-            this.update_snackbar({
-              on: true,
-              color: "error",
-              bt: "info",
-              text: "用户名或密码错误"
-            });
-          }
-        });
+      this.$store.commit("getToken");
     },
     trans: params => {
       let length = 0;
@@ -187,9 +139,7 @@ export default {
     get_username: function() {
       return this.username;
     },
-    snb: function() {
-      return this.snackbar;
-    }
+    ...mapState(["username", "password"])
   },
   created: function() {
     this.inputs = this.trans({

@@ -203,7 +203,8 @@
 </template>
 
 <script>
-const axios = require("axios");
+import { mapState } from "vuex";
+
 export default {
   methods: {
     get_userinfo: function() {},
@@ -285,6 +286,9 @@ export default {
         Math.floor(Math.random() * 10) +
         ".png")
     };
+  },
+  computed: {
+    ...mapState(["token_varifyed"])
   }
 };
 </script>
