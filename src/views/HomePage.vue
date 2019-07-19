@@ -200,8 +200,10 @@
 </template>
 
 <script>
+const axios = require("axios");
 export default {
   methods: {
+    get_userinfo: function() {},
     jump: function(index) {
       if (index == 0) {
         // jump
