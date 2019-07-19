@@ -7,7 +7,11 @@ export default new Vuex.Store({
   state: {
     username: "",
     password: "",
-    user: {},
+    user: {
+      name: "",
+      class_no: "",
+      school: "",
+    },
     token: "",
     refresh: "",
     token_verified: false,
@@ -25,6 +29,54 @@ export default new Vuex.Store({
     }
   },
   mutations: {
+    sign(state) {
+      axios.get('/api/v1/sign')
+        .then(({
+          data
+        }) => {
+          localStorage.setItem("r_", data.r_)
+          localStorage.setItem("e", data.e)
+          localStorage.setItem("v", data.v)
+        }).catch(e => {
+          state.snackbar = {
+            ...state.snackbar,
+            on: true,
+            color: "error",
+            text: "无法获取匿名凭据：" + e.response.data,
+            bt: "error"
+          };
+        })
+    },
+    get_info(state) {
+      axios.get(
+        '/api/v1/info',
+        headers = {
+          Authorization: 'Bearer ' + state.token
+        }
+      ).then(({
+        data
+      }) => {
+        state.user = {
+          ...state.user,
+          ...data
+        }
+      }).catch(e => {
+        console.log(e)
+        console.log('无法获取学生信息')
+      })
+    },
+    to_pes(state) {
+      // TODO
+      console.log(state.user)
+      alert("go to pes")
+      // window.location.href = ''
+    },
+    updateSnackbar(state, data) {
+      state.snackbar = {
+        ...state.snackbar,
+        ...data
+      };
+    },
     toggleSnackbar(state) {
       state.snackbar = {
         ...state.snackbar,
@@ -37,18 +89,58 @@ export default new Vuex.Store({
     updatePassword(state, password) {
       state.password = password;
     },
-    updateToken(state) {},
-    verifyToken(state) {},
+    updateToken(state) {
+      axios
+        .post("/api/token/refresh", {
+          refresh: state.refresh
+        })
+        .then(({
+          data,
+          status
+        }) => {
+          if (status == 200) {
+            state.token = data.access;
+          }
+          state.token_verified = true;
+        })
+        .catch(e => {
+          console.log(e);
+          state.token_verified = false;
+        });
+    },
+    verifyToken(state) {
+      axios
+        .post("/api/token/verify/", {
+          token: state.token
+        })
+        .then(({
+          status
+        }) => {
+          if (status == 200) {
+            state.token_verified = true;
+          } else {
+            state.token_verified = false;
+          }
+        })
+        .catch(error => {
+          console.log(error);
+          state.token_verified = false;
+        });
+    },
     getToken(state) {
       axios
         .post("/api/token/", {
           username: state.username,
           password: state.password
         })
-        .then(({ data, status }) => {
+        .then(({
+          data,
+          status
+        }) => {
           if (status == 200) {
             // LGTM
-            state.token = data.token;
+            state.token = data.access;
+            state.refresh = data.refresh;
             state.snackbar = {
               ...state.snackbar,
               on: true,
@@ -56,11 +148,12 @@ export default new Vuex.Store({
               text: "登录成功",
               bt: "check"
             };
-            // TODO 增加跳转
-            this.$router.push("/home");
+            state.token_verified = true;
           }
         })
-        .catch(({ response }) => {
+        .catch(({
+          response
+        }) => {
           if (response.status == 404) {
             state.snackbar = {
               ...state.snackbar,
@@ -82,6 +175,7 @@ export default new Vuex.Store({
               }
             };
           }
+          state.token_verified = false;
         });
     }
   },

@@ -118,6 +118,9 @@ export default {
     submit: function() {
       if (!this.$data.valid) return;
       this.$store.commit("getToken");
+      if (this.$data.token_verified) {
+        this.$router.push("/home");
+      }
     },
     trans: params => {
       let length = 0;
@@ -139,7 +142,7 @@ export default {
     get_username: function() {
       return this.username;
     },
-    ...mapState(["username", "password"])
+    ...mapState(["username", "password", "token_verified"])
   },
   created: function() {
     this.inputs = this.trans({

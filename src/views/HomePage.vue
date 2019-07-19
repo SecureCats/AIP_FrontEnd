@@ -158,9 +158,9 @@
                                 class="text-sm-center medium"
                                 :color="index ? 'secondary' : 'white'"
                               >
-                                <v-flex py-2 pl-3 class="text-sm-left">
-                                  {{ item.name }}
-                                </v-flex>
+                                <v-flex py-2 pl-3 class="text-sm-left">{{
+                                  item.name
+                                }}</v-flex>
                               </v-card>
                             </template>
                           </v-flex>
@@ -171,9 +171,9 @@
                                   v-for="(value, key, index) in courses[0]
                                     .detail"
                                 >
-                                  <v-flex :key="index" class="medium" pa-3>
-                                    {{ key + "：" + value }}
-                                  </v-flex>
+                                  <v-flex :key="index" class="medium" pa-3>{{
+                                    key + "：" + value
+                                  }}</v-flex>
                                 </template>
                               </v-flex>
                             </v-card>
@@ -207,10 +207,21 @@ import { mapState } from "vuex";
 
 export default {
   methods: {
-    get_userinfo: function() {},
     jump: function(index) {
       if (index == 0) {
-        // jump
+        this.$store.commit("verifyToken");
+        if (this.token_verified) {
+          // jump
+          this.$store.commit("to_pes");
+        } else {
+          this.$state.commit("refreshToken");
+          if (this.token_verified) {
+            // jump
+            this.$store.commit("to_pes");
+          } else {
+            this.$router.push("/");
+          }
+        }
       } else {
         this.snackbar = true;
       }
@@ -218,6 +229,16 @@ export default {
   },
   mounted: function() {
     // if not authorized, jump to login page.
+    this.$store.commit("verifyToken");
+    if (!this.token_verified) {
+      this.$store.commit("updateSnackbar", {
+        on: true,
+        text: "请重新登录",
+        btn: "info",
+        color: "yellow"
+      });
+      this.$router.push("/");
+    }
   },
   data() {
     return {
@@ -288,7 +309,7 @@ export default {
     };
   },
   computed: {
-    ...mapState(["token_varifyed"])
+    ...mapState(["token_verified", "snackbar"])
   }
 };
 </script>
