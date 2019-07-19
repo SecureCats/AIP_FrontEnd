@@ -6,7 +6,12 @@
         <v-layout column justify-space-between fill-height>
           <v-toolbar flat color="transparent">
             <v-toolbar-side-icon>
-              <v-icon>school</v-icon>
+              <v-img
+                :src="require('@/assets/icon.png')"
+                width="24px"
+                height="24px"
+                contain
+              />
             </v-toolbar-side-icon>
             <v-toolbar-title class="headline text-uppercase">
               <span class="title-font">教务系统统一身份认证</span>
