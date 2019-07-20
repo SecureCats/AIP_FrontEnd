@@ -225,7 +225,6 @@ export default {
           return;
         }
         // jump to PES
-        this.$store.commit("sign");
         this.$store.commit("to_pes");
       } else {
         this.$store.commit("updateSnackbar", {
@@ -245,16 +244,18 @@ export default {
     this.$store.commit("updateRefresh", refresh_token);
     this.$store.commit("verifyToken", () => {
       console.log("verify token 1 failed, try to update token...");
-      this.$store.commit("updateToken");
-      this.$store.commit("verifyToken", () => {
-        console.log("verify token 2 failed...");
-        this.$store.commit("updateSnackbar", {
-          on: true,
-          text: "请重新登录",
-          btn: "info",
-          color: "yellow"
+      this.$store.commit("updateToken", () => {
+        this.$store.commit("verifyToken", () => {
+          console.log("verify token 2 failed...");
+          this.$store.commit("updateSnackbar", {
+            on: true,
+            text: "请重新登录",
+            btn: "info",
+            color: "yellow"
+          });
+          this.$router.push("/");
         });
-        this.$router.push("/");
+        this.$store.commit("getInfo");
       });
     });
     this.$store.commit("getInfo");

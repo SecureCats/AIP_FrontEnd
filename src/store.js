@@ -7,12 +7,6 @@ import bitInt from "big-integer";
 Vue.use(Vuex);
 const axios = require("axios");
 
-let save2Local = data => {
-  Object.keys(data).forEach(key => {
-    localStorage.setItem(key, data[key]);
-  });
-};
-
 export default new Vuex.Store({
   state: {
     username: "",
@@ -49,29 +43,7 @@ export default new Vuex.Store({
     cleanPassword(state) {
       state.password = "";
     },
-    sign(state) {
-      axios({
-        url: "api/v1/sign",
-        headers: {
-          Authorization: "Bearer " + state.token
-        },
-        method: "post"
-      })
-        .then(({ data }) => {
-          localStorage.setItem("r_", data.r_);
-          localStorage.setItem("e", data.e);
-          localStorage.setItem("v", data.v);
-        })
-        .catch(e => {
-          state.snackbar = {
-            ...state.snackbar,
-            on: true,
-            color: "error",
-            text: "无法获取匿名凭据：" + e.response,
-            bt: "error"
-          };
-        });
-    },
+
     getInfo(state) {
       axios({
         method: "get",
@@ -95,30 +67,34 @@ export default new Vuex.Store({
       axios
         .get(`/api/v1/pubkey/${state.user.semester}/${state.user.class_no}`)
         .then(({ data }) => {
+          let { a, b, c, g, h, n } = data;
           console.log(data);
           let { x, y, C, z1, z2, uk, r } = keygen(data);
           // then, sign : sign
           axios({
             url: "/api/v1/sign",
             method: "post",
-            data: { x, y, C, z1, z2 },
+            data: {
+              x,
+              y,
+              C,
+              z1,
+              z2
+            },
             headers: {
               Authorization: "Bearer " + state.token
             }
           }).then(({ data }) => {
             let { r_, e, v } = data;
             let s = bitInt(r) + bitInt(r_).toString();
-            save2Local({
-              x,
-              y,
-              C,
-              z1,
-              z2,
-              uk,
-              s,
-              e,
-              v
-            });
+            localStorage.setItem(
+              "seed",
+              JSON.stringify({
+                pubkey: { a, b, c, g, h, n },
+                signature: { e, s, v },
+                uk
+              })
+            );
           });
         });
 
@@ -142,7 +118,7 @@ export default new Vuex.Store({
     updatePassword(state, password) {
       state.password = password;
     },
-    updateToken(state) {
+    updateToken(state, fn) {
       axios
         .post("/api/token/refresh/", {
           refresh: state.refresh
@@ -153,6 +129,7 @@ export default new Vuex.Store({
             Vue.cookie.set("access_token", state.token, 1);
           }
           state.token_verified = true;
+          if (fn) fn();
         })
         .catch(() => {
           state.token_verified = false;
