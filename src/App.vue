@@ -16,15 +16,11 @@
 </template>
 
 <script>
-// import LoginPage from "./components/LoginPage";
-
 export default {
   name: "App",
   components: {},
   data() {
-    return {
-      //
-    };
+    return {};
   },
   computed: {
     snackbar() {
@@ -35,6 +31,12 @@ export default {
     toggleSnackbar: function() {
       this.$store.commit("toggleSnackbar");
     }
+  },
+  created: function() {
+    let access_token = this.$cookie.get("access_token") || "";
+    let refresh_token = this.$cookie.get("refresh_token") || "";
+    this.$store.commit("updateAccess", access_token);
+    this.$store.commit("updateRefresh", refresh_token);
   }
 };
 </script>

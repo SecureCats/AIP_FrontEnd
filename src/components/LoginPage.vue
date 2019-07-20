@@ -48,6 +48,7 @@
                     <!-- <template v-for="(v, index) in inputs"> -->
                     <v-flex mt-3 class="font-weight-bold">学工号 *</v-flex>
                     <v-text-field
+                      autofocus
                       mt-0
                       :placeholder="inputs[0].ph"
                       :type="inputs[0].tp"
@@ -118,9 +119,6 @@ export default {
     submit: function() {
       if (!this.$data.valid) return;
       this.$store.commit("getToken");
-      if (this.$data.token_verified) {
-        this.$router.push("/home");
-      }
     },
     trans: params => {
       let length = 0;

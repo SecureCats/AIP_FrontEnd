@@ -30,14 +30,24 @@
             >
             <v-flex xs8>
               <v-layout>
-                <template v-for="(content, name, index) in user.detail">
-                  <v-flex :key="index">
-                    <v-card flat>
-                      <div class="font-weight-bold">{{ name }}</div>
-                      <div>{{ content }}</div>
-                    </v-card>
-                  </v-flex>
-                </template>
+                <v-flex>
+                  <v-card flat>
+                    <div class="font-weight-bold">学年</div>
+                    <div>{{ user.semester }}</div>
+                  </v-card>
+                </v-flex>
+                <v-flex>
+                  <v-card flat>
+                    <div class="font-weight-bold">班级</div>
+                    <div>{{ user.class_no }}</div>
+                  </v-card>
+                </v-flex>
+                <v-flex>
+                  <v-card flat>
+                    <div class="font-weight-bold">专业</div>
+                    <div>{{ user.school }}</div>
+                  </v-card>
+                </v-flex>
                 <v-spacer></v-spacer>
               </v-layout>
             </v-flex>
@@ -158,9 +168,9 @@
                                 class="text-sm-center medium"
                                 :color="index ? 'secondary' : 'white'"
                               >
-                                <v-flex py-2 pl-3 class="text-sm-left">{{
-                                  item.name
-                                }}</v-flex>
+                                <v-flex py-2 pl-3 class="text-sm-left">
+                                  {{ item.name }}
+                                </v-flex>
                               </v-card>
                             </template>
                           </v-flex>
@@ -171,9 +181,9 @@
                                   v-for="(value, key, index) in courses[0]
                                     .detail"
                                 >
-                                  <v-flex :key="index" class="medium" pa-3>{{
-                                    key + "：" + value
-                                  }}</v-flex>
+                                  <v-flex :key="index" class="medium" pa-3>
+                                    {{ key + "：" + value }}
+                                  </v-flex>
                                 </template>
                               </v-flex>
                             </v-card>
@@ -194,11 +204,6 @@
       <div>&copy; {{ new Date().getFullYear() }} 高校教务处</div>
       <v-spacer></v-spacer>
     </v-footer>
-    <v-snackbar v-model="snackbar" color="error" :timeout="timeout" top>
-      <v-icon dark :size="20">error</v-icon>
-      <span>该功能尚未实现</span>
-      <v-btn dark flat @click="snackbar = false">好的</v-btn>
-    </v-snackbar>
   </v-layout>
 </template>
 
@@ -206,53 +211,57 @@
 import { mapState } from "vuex";
 
 export default {
+  created: function() {
+    this.$store.commit("cleanPassword");
+    // "password has been cleant"
+  },
   methods: {
     jump: function(index) {
       if (index == 0) {
         this.$store.commit("verifyToken");
-        if (this.token_verified) {
-          // jump
-          this.$store.commit("to_pes");
-        } else {
-          this.$state.commit("refreshToken");
-          if (this.token_verified) {
-            // jump
-            this.$store.commit("to_pes");
-          } else {
-            this.$router.push("/");
-          }
+        if (!this.token_verified) this.$store.commit("refreshToken");
+        if (!this.token_verified) {
+          this.$router.push("/");
+          return;
         }
+        // jump to PES
+        this.$store.commit("sign");
+        this.$store.commit("to_pes");
       } else {
-        this.snackbar = true;
+        this.$store.commit("updateSnackbar", {
+          on: true,
+          text: "该功能尚未实现",
+          bt: "info",
+          color: "primary"
+        });
       }
     }
   },
   mounted: function() {
     // if not authorized, jump to login page.
-    this.$store.commit("verifyToken");
-    if (!this.token_verified) {
-      this.$store.commit("updateSnackbar", {
-        on: true,
-        text: "请重新登录",
-        btn: "info",
-        color: "yellow"
+    let access_token = this.$cookie.get("access_token") || "";
+    let refresh_token = this.$cookie.get("refresh_token") || "";
+    this.$store.commit("updateAccess", access_token);
+    this.$store.commit("updateRefresh", refresh_token);
+    this.$store.commit("verifyToken", () => {
+      console.log("verify token 1 failed, try to update token...");
+      this.$store.commit("updateToken");
+      this.$store.commit("verifyToken", () => {
+        console.log("verify token 2 failed...");
+        this.$store.commit("updateSnackbar", {
+          on: true,
+          text: "请重新登录",
+          btn: "info",
+          color: "yellow"
+        });
+        this.$router.push("/");
       });
-      this.$router.push("/");
-    }
+    });
+    this.$store.commit("getInfo");
   },
   data() {
     return {
-      snackbar: false,
-      timeout: 3000,
       navbar_navs: ["图书馆", "学院主页", "新闻发布", "开源镜像", "校园导航"],
-      user: {
-        name: "派大星",
-        detail: {
-          学年: "2018 - 2019 秋季学期",
-          班级: "北京 xx 大学 1901 班",
-          专业: "计算机科学与技术"
-        }
-      },
       info: [
         [
           "关于2019年下半年本科生出国（境）项目增开行前教育会的通知",
@@ -309,7 +318,7 @@ export default {
     };
   },
   computed: {
-    ...mapState(["token_verified", "snackbar"])
+    ...mapState(["token_verified", "user"])
   }
 };
 </script>
