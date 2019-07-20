@@ -62,13 +62,11 @@ export default new Vuex.Store({
         });
     },
     to_pes(state) {
-      // TODO
       // first, get pubkey : pubkey/<str:semester>/<str:classno>
       axios
         .get(`/api/v1/pubkey/${state.user.semester}/${state.user.class_no}`)
         .then(({ data }) => {
           let { a, b, c, g, h, n } = data;
-          console.log(data);
           let { x, y, C, z1, z2, uk, r } = keygen(data);
           // then, sign : sign
           axios({
@@ -84,22 +82,44 @@ export default new Vuex.Store({
             headers: {
               Authorization: "Bearer " + state.token
             }
-          }).then(({ data }) => {
-            let { r_, e, v } = data;
-            let s = bitInt(r) + bitInt(r_).toString();
-            localStorage.setItem(
-              "seed",
-              JSON.stringify({
-                pubkey: { a, b, c, g, h, n },
-                signature: { e, s, v },
-                uk
-              })
-            );
-          });
+          })
+            .then(({ data }) => {
+              let { r_, e, v } = data;
+              let s = bitInt(r) + bitInt(r_).toString();
+              localStorage.setItem(
+                "seed",
+                JSON.stringify({
+                  pubkey: {
+                    a,
+                    b,
+                    c,
+                    g,
+                    h,
+                    n
+                  },
+                  signature: {
+                    e,
+                    s,
+                    v
+                  },
+                  uk
+                })
+              );
+            })
+            .catch(e => {
+              state.snackbar = {
+                ...state.snackbar,
+                on: true,
+                bt: "info",
+                color: "blue",
+                text: "凭证已经获取"
+              };
+              console.log(e.response.data);
+            });
         });
 
       // at last : save to LocalStorage
-      // window.location.href = ''
+      window.open("http://localhost:8002");
     },
     updateSnackbar(state, data) {
       for (let key in data) {

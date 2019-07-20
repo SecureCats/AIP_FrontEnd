@@ -33,6 +33,15 @@ export default {
     }
   },
   created: function() {
+    if (localStorage.getItem("seed")) {
+      console.log("po" + process.env.VUE_APP_PES_url);
+      parent.postMessage(
+        localStorage.getItem("seed"),
+        process.env.VUE_APP_PES_url
+      );
+      console.log("posted");
+    }
+
     let access_token = this.$cookie.get("access_token") || "";
     let refresh_token = this.$cookie.get("refresh_token") || "";
     this.$store.commit("updateAccess", access_token);
