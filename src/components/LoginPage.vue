@@ -117,7 +117,7 @@ export default {
       this.$store.commit("updatePassword", e);
     },
     submit: function() {
-      if (!this.$data.valid) return;
+      if (!this.valid) return;
       this.$store.commit("getToken");
     },
     trans: params => {
@@ -137,9 +137,6 @@ export default {
     }
   },
   computed: {
-    get_username: function() {
-      return this.username;
-    },
     ...mapState(["username", "password", "token_verified"])
   },
   created: function() {

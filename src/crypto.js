@@ -3,8 +3,8 @@ var sha256 = require("../node_modules/js-sha256");
 
 let generate_32_bit_hex = () =>
   Math.random()
-    .toString(16)
-    .substring(7);
+    .toString(15)
+    .substring(5, 5 + 8);
 let generate_random_bigint = length => {
   let bitNum = "";
   for (let i = 0; i < length / 32; i += 1) bitNum += generate_32_bit_hex();
@@ -58,4 +58,4 @@ let keygen = pubkey => {
   };
 };
 
-export default keygen;
+export { keygen, generate_32_bit_hex, generate_random_bigint, H };
