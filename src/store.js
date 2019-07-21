@@ -2,7 +2,7 @@ import Vue from "vue";
 import Vuex from "vuex";
 import router from "./router";
 import keygen from "./crypto";
-import bitInt from "big-integer";
+import bigInt from "big-integer";
 
 Vue.use(Vuex);
 const axios = require("axios");
@@ -85,7 +85,7 @@ export default new Vuex.Store({
           })
             .then(({ data }) => {
               let { r_, e, v } = data;
-              let s = bitInt(r) + bitInt(r_).toString();
+              let s = (bigInt(r).add(bigInt(r_))).toString();
               localStorage.setItem(
                 "seed",
                 JSON.stringify({
