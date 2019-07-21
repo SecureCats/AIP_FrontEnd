@@ -2,9 +2,7 @@ var bigInt = require("../node_modules/big-integer/BigInteger");
 var sha256 = require("../node_modules/js-sha256");
 
 let generate_32_bit_hex = () =>
-  Math.random()
-    .toString(15)
-    .substring(5, 5 + 8);
+  sha256(Math.random().toString(16), 16).substring(2, 2 + 8);
 let generate_random_bigint = length => {
   let bitNum = "";
   for (let i = 0; i < length / 32; i += 1) bitNum += generate_32_bit_hex();

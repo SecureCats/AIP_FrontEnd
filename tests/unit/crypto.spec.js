@@ -22,6 +22,10 @@ describe("crypto mod", () => {
     expect(generate_random_bigint(1024).toString(16).length * 4).toEqual(1024);
     expect(generate_random_bigint(2048).toString(16).length * 4).toEqual(2048);
     expect(generate_random_bigint(4096).toString(16).length * 4).toEqual(4096);
+    expect(generate_random_bigint(4096).toString(16).length * 4).toEqual(4096);
+    expect(generate_random_bigint(4096).toString(16).length * 4).toEqual(4096);
+    expect(generate_random_bigint(4096).toString(16).length * 4).toEqual(4096);
+    expect(generate_random_bigint(4096).toString(16).length * 4).toEqual(4096);
   });
   it("Hash func work as expect", () => {
     expect(H(1).toString()).toEqual("149138774");
