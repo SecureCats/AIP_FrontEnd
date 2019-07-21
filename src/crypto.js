@@ -23,7 +23,7 @@ let keygen = pubkey => {
   let h = pubkey.h;
   let n = pubkey.n;
 
-  let uk = generate_random_bigint(4096);
+  let uk = generate_random_bigint(32);
   let r = generate_random_bigint(32);
   let r1 = generate_random_bigint(32);
   let r2 = generate_random_bigint(32);
