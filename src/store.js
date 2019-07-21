@@ -119,7 +119,7 @@ export default new Vuex.Store({
         });
 
       // at last : save to LocalStorage
-      window.open("http://localhost:8002");
+      window.open("https://pes.tapes.ga");
     },
     updateSnackbar(state, data) {
       for (let key in data) {
