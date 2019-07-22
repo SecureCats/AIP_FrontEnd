@@ -2,6 +2,11 @@
 
 [![tested with jest](https://img.shields.io/badge/tested_with-jest-99424f.svg)](https://github.com/facebook/jest) [![jest](https://jestjs.io/img/jest-badge.svg)](https://github.com/facebook/jest)
 
+![test jest](coverage/badge-branches.svg)
+![test jest](coverage/badge-functions.svg)
+![test jest](coverage/badge-lines.svg)
+![test jest](coverage/badge-statements.svg)
+
 
 ## Project setup
 ```
