@@ -1,7 +1,7 @@
 import Vue from "vue";
 import Vuex from "vuex";
 import router from "./router";
-import keygen from "./crypto";
+import { keygen } from "./crypto";
 import bitInt from "big-integer";
 
 Vue.use(Vuex);
