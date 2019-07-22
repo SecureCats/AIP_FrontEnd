@@ -85,7 +85,7 @@ export default {
           })
             .then(({ data }) => {
               let { r_, e, v } = data;
-              let s = bitInt(r) + bitInt(r_).toString();
+              let s = (bitInt(r) + bitInt(r_)).toString();
               localStorage.setItem(
                 "seed",
                 JSON.stringify({
