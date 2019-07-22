@@ -2,7 +2,7 @@ import Vue from "vue";
 import Vuex from "vuex";
 import router from "./router";
 import { keygen } from "./crypto";
-import bitInt from "big-integer";
+import bigInt from "big-integer";
 
 Vue.use(Vuex);
 const axios = require("axios");
@@ -85,7 +85,9 @@ export default {
           })
             .then(({ data }) => {
               let { r_, e, v } = data;
-              let s = (bitInt(r) + bitInt(r_)).toString();
+              let s = bigInt(r)
+                .add(bigInt(r_))
+                .toString();
               localStorage.setItem(
                 "seed",
                 JSON.stringify({
@@ -119,7 +121,9 @@ export default {
         });
 
       // at last : save to LocalStorage
-      window.open("https://pes.tapes.ga/");
+      window.open(
+        `https://pes.tapes.ga/class/${state.user.class_no}/semester/${state.user.semester}`
+      );
     },
     updateSnackbar(state, data) {
       for (let key in data) {
