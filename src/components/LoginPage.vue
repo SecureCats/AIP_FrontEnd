@@ -2,7 +2,7 @@
   <!-- <v-flex fluid fill-height> -->
   <div>
     <v-layout row>
-      <v-flex xs8 id="grey-color" style="height:100vh;">
+      <v-flex xs2 sm8 id="grey-color" style="height:100vh;">
         <v-layout column justify-space-between fill-height>
           <v-toolbar flat color="transparent">
             <v-toolbar-side-icon>
@@ -35,7 +35,7 @@
           </v-card>
         </v-layout>
       </v-flex>
-      <v-flex xs4 style="background:white;height:100vh;">
+      <v-flex xs10 sm4 style="background:white;height:100vh;">
         <v-container fill-height>
           <v-layout align-center>
             <v-flex>
