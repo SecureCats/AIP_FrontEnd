@@ -122,7 +122,7 @@ export default {
 
       // at last : save to LocalStorage
       window.open(
-        `https://pes.tapes.ga/class/${state.user.class_no}/semester/${state.user.semester}`
+        `https://pes.fates.felinae98.cn/class/${state.user.class_no}/semester/${state.user.semester}`
       );
     },
     updateSnackbar(state, data) {
