@@ -107,6 +107,11 @@ export default {
                   uk
                 })
               );
+      // at last : save to LocalStorage
+      window.open(
+        `https://pes.fates.felinae98.cn/class/${state.user.class_no}/semester/${state.user.semester}`
+      );
+
             })
             .catch(e => {
               state.snackbar = {
@@ -117,13 +122,14 @@ export default {
                 text: "凭证已经获取"
               };
               console.log(e.response.data);
-            });
-        });
-
       // at last : save to LocalStorage
       window.open(
         `https://pes.fates.felinae98.cn/class/${state.user.class_no}/semester/${state.user.semester}`
       );
+
+            });
+        });
+
     },
     updateSnackbar(state, data) {
       for (let key in data) {
